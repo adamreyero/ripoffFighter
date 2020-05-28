@@ -1,0 +1,1230 @@
+﻿<html>
+<head>
+	<style>
+	*{padding: 0; margin:0;}
+	canvas{ background: #eeee; display: block; margin: 0 auto;}
+	</style>
+</head>
+<body>
+<canvas id= "myCanvas" width="800" height="600"></canvas>
+<script type="text/javascript">
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+document.addEventListener("mousemove", mouseMoveHandler, false);
+canvas.addEventListener("mousedown", getPosition, false);
+canvas.addEventListener("mouseup", getPosition2, false);
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+var gameStarted = false;
+var options = false;
+var buttons = [];
+var wait = 0;
+var preRound = false;
+var animationClock = 0;
+var musicVolume = 1;
+var offset = 400;
+var roundTime = 800;
+var roundTimer = 800;
+var endScreen = false;
+
+var pX = 400;
+var pY = 300;
+var mouseIsDown = false;
+
+var escPressed = false;
+
+var upPressed = false;
+var downPressed = false;
+var leftPressed = false;
+var rightPressed = false;
+var twoPressed = false;
+var ctrlPressed = false;
+var threePressed = false;
+
+var wPressed = false;
+var aPressed = false;
+var sPressed = false;
+var dPressed = false;
+var uPressed = false;
+var iPressed = false;
+
+var players = [];
+var gravity = 1;
+var images = [];
+var projectiles0 = [];
+var projectiles1 = [];
+
+var Final = new Audio();
+Final.src ="Final.mp3";
+
+var startscreen = new Image();
+startscreen.src = "startscreen.png";
+var option = new Image();
+option.src = "options.png";
+var vsScreen = new Image();
+vsScreen.src = "vsScreen.png";
+var stage = new Image();
+stage.src = "stage.jpg";
+var vs = new Image();
+vs.src = "vs.png";
+var projectileL = new Image();
+projectileL.src = "projectileL.png";
+var projectile = new Image();
+projectile.src = "projectile.png";
+var ko = new Image();
+ko.src = "ko.png";
+var hpbar = new Image();
+hpbar.src = "hpbar.png";
+
+//1mega 2idle 3move 4punch 5idleL 6moveL 7punchL 8kick 9kickl 10charge 11chargeL
+
+images[1] = new Image();
+images[1].src = "megaRyu.png";
+images[2] = new Image();
+images[2].src = "ryuIdle.png";
+images[3] = new Image();
+images[3].src = "ryuMove.png";
+images[4] = new Image();
+images[4].src = "ryuPunch.png";
+images[5] = new Image();
+images[5].src = "ryuIdleL.png";
+images[6] = new Image();
+images[6].src = "ryuMoveL.png";
+images[7] = new Image();
+images[7].src = "ryuPunchL.png";
+images[8] = new Image()
+images[8].src = "ryuKick.png";
+images[9] = new Image()
+images[9].src = "ryuKickL.png";
+images[10] = new Image()
+images[10].src = "ryuCharge.png";
+images[11] = new Image()
+images[11].src = "ryuChargeL.png";
+images[12] = new Image()
+images[12].src = "ryuBlock.png";
+images[13] = new Image()
+images[13].src = "ryuBlockL.png";
+images[14] = new Image()
+images[14].src = "images.png";
+images[15] = new Image()
+images[15].src = "3idle.png";
+images[16] = new Image()
+images[16].src = "3move.png";
+images[17] = new Image()
+images[17].src = "3punch.png";
+images[18] = new Image()
+images[18].src = "3idleL.png";
+images[19] = new Image()
+images[19].src = "3moveL.png";
+images[20] = new Image()
+images[20].src = "3punchL.png";
+images[21] = new Image()
+images[21].src = "3kck.png";
+images[22] = new Image()
+images[22].src = "3kckL.png";
+images[23] = new Image()
+images[23].src = "3Charge.png";
+images[24] = new Image()
+images[24].src = "3ChargeL.png";
+images[25] = new Image()
+images[25].src = "3block.png";
+images[26] = new Image()
+images[26].src = "3blockL.png";
+images[27] = new Image()
+images[27].src = "megaKen.png";
+images[28] = new Image()
+images[28].src = "kenidle.png";
+images[29] = new Image()
+images[29].src = "kenmove.png";
+images[30] = new Image()
+images[30].src = "kenpunch.png";
+images[31] = new Image()
+images[31].src = "kenidleL.png";
+images[32] = new Image()
+images[32].src = "kenmoveL.png";
+images[33] = new Image()
+images[33].src = "kenpunchL.png";
+images[34] = new Image()
+images[34].src = "kenkck.png";
+images[35] = new Image()
+images[35].src = "kenkckL.png";
+images[36] = new Image()
+images[36].src = "kenCharge.png";
+images[37] = new Image()
+images[37].src = "kenChargeL.png";
+images[38] = new Image()
+images[38].src = "kenblock.png";
+images[39] = new Image()
+images[39].src = "kenblockL.png";
+
+
+
+function mouseMoveHandler(e) {
+    pX = e.clientX - canvas.offsetLeft;
+    pY = e.clientY - canvas.offsetTop;
+}
+function getPosition2(event){
+	mouseIsDown = false;
+}
+function getPosition(event)
+{
+	mouseIsDown = true;
+}
+
+function keyDownHandler(e)
+{
+	if(e.keyCode == 38)
+	{
+		upPressed = true;
+	}
+	if(e.keyCode == 40)
+	{
+		downPressed = true;
+	}
+	if(e.keyCode == 37)
+	{
+		leftPressed = true;
+	}
+	if(e.keyCode == 39)
+	{
+		rightPressed = true;
+	}
+	if(e.keyCode == 98)
+	{
+		twoPressed = true;
+	}
+	if(e.keyCode == 87)
+	{
+		wPressed = true;
+	}
+	if(e.keyCode == 65)
+	{
+		aPressed = true;
+	}
+	if(e.keyCode == 83)
+	{
+		sPressed = true;
+	}
+	if(e.keyCode == 68)
+	{
+		dPressed = true;
+	}
+	if(e.keyCode == 85)
+	{
+		uPressed = true;
+	}
+	if(e.keyCode == 27)
+	{
+		escPressed = true;
+	}
+	if(e.keyCode == 17)
+	{
+		ctrlPressed = true;
+	}
+	if(e.keyCode == 73)
+	{
+		iPressed = true;
+	}
+	if(e.keyCode == 99)
+	{
+		threePressed = true;
+	}
+}
+
+function keyUpHandler(e)
+{
+	if(e.keyCode == 38)
+	{
+		upPressed = false;
+	}
+	if(e.keyCode == 40)
+	{
+		downPressed = false;
+	}
+	if(e.keyCode == 37)
+	{
+		leftPressed = false;
+	}
+	if(e.keyCode == 39)
+	{
+		rightPressed = false;
+	}
+	if(e.keyCode == 98)
+	{
+		twoPressed = false;
+	}
+	if(e.keyCode == 87)
+	{
+		wPressed = false;
+	}
+	if(e.keyCode == 65)
+	{
+		aPressed = false;
+	}
+	if(e.keyCode == 83)
+	{
+		sPressed = false;
+	}
+	if(e.keyCode == 68)
+	{
+		dPressed = false;
+	}
+	if(e.keyCode == 85)
+	{
+		uPressed = false;
+	}
+	if(e.keyCode == 27)
+	{
+		escPressed = false;
+	}
+	if(e.keyCode == 17)
+	{
+		ctrlPressed = false;
+	}
+	if(e.keyCode == 73)
+	{
+		iPressed = false;
+	}
+	if(e.keyCode == 99)
+	{
+		threePressed = false;
+	}
+}
+
+function Player(x,y,w,h,yV,xV,standing,jump,s,direction,reach,meleeing,health,currentImage,character,immunity,strength,charging,time,released,shield,shielding)
+{
+this.x = x;
+this.y = y;
+this.w = w;
+this.h = h;
+this.yV = yV;
+this.xV = xV;
+this.standing = standing;
+this.jump = jump;
+this.s = s;
+this.direction = direction;
+this.reach = reach;
+this.meleeing = meleeing;
+this.health = health;
+this.currentImage = currentImage;
+this.character = character;
+this.immunity = immunity;
+this.strength = strength;
+this.charging = charging;
+this.time = time;
+this.released = released;
+this.shield = shield;
+this.shielding = shielding;
+
+//0//0 left 1 right
+}
+
+//x,y,w,h,yV,xV,standing,jump,s,direction,reach,meleeing,health,currentImage,character,immunity,strength,charging,time,released
+
+players[0] = new Player(10,800,100,200,0,0,false,20,5,1,50,false,100,images[2],0,false,5,false,0,true,25,false);
+players[1] = new Player(700,800,100,200,0,0,false,20,5,0,50,false,100,images[2],0,false,5,false,0,true,25,false);
+
+//1mega 2idle 3move 4punch 5idleL 6moveL 7punchL 8kick 9kickl
+
+function drawPlayer()
+{
+	for(var a = 0; a < players.length; a++)
+	{
+		console.log(players[a].shield);
+		console.log(players[a].shielding);
+		players[a].standing = false;
+		players[a].yV += gravity;
+		players[a].meleeing = false;
+		players[a].shielding = false;
+		if(players[a].y + players[a].h >= 550)
+		{
+			players[a].y = 550 - players[a].h;
+			players[a].yV = 0;
+			players[a].standing = true;
+			players[a].xV = 0;
+			players[a].immunity = false;
+			players[a].charging = false;
+			players[a].released = true;
+			if(players[a].direction == 0)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+			if(players[a].direction == 1)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+		}
+		if(sPressed)
+		{
+			players[0].shielding = true;
+			if(players[0].direction == 0)
+			{
+				players[0].currentImage = images[players[0].character+13];
+			}
+			if(players[0].direction == 1)
+			{
+				players[0].currentImage = images[players[0].character+12];
+			}
+		}
+		if(downPressed)
+		{
+			players[1].shielding = true;
+			if(players[1].direction == 0)
+			{
+				players[1].currentImage = images[players[1].character+13];
+			}
+			if(players[1].direction == 1)
+			{
+				players[1].currentImage = images[players[1].character+12];
+			}
+		}
+		if(iPressed && !players[0].shielding)
+		{
+			players[0].charging = true;
+			players[0].time++;
+			if(players[0].direction == 0)
+			{
+				players[0].currentImage = images[players[0].character+11];
+			}
+			if(players[0].direction == 1)
+			{
+				players[0].currentImage = images[players[0].character+10];
+			}
+			if(players[0].time >= 100)
+			{
+				players[0].time = 100;
+			}
+		}
+		if(!players[a].shielding && players[a].shield < 25)
+		{
+			if(players[a].shield < 0)
+			{
+				players[a].shield = 0;
+			}
+			players[a].shield += .1;
+		}
+		if(threePressed && !players[1].shielding)
+		{
+			players[1].charging = true;
+			players[1].time++;
+			if(players[1].direction == 0)
+			{
+				players[1].currentImage = images[players[1].character+11];
+			}
+			if(players[1].direction == 1)
+			{
+				players[1].currentImage = images[players[1].character+10];
+			}
+			if(players[1].time >= 100)
+			{
+				players[1].time = 100;
+			}
+		}
+		if(!players[0].charging)
+		{
+			if(players[0].time>0)
+			{
+				if(players[0].direction == 0)
+				{
+					projectiles0.push(new Projectile(players[0].x,players[0].y,players[0].time,-5,0,projectile));
+				}
+				if(players[0].direction == 1)
+				{
+					projectiles0.push(new Projectile(players[0].x,players[0].y,players[0].time,5,0,projectileL));
+				}
+			}
+			players[0].time = 0;
+		}
+		if(!players[1].charging)
+		{
+			if(players[1].time>0)
+			{
+				if(players[1].direction == 0)
+				{
+					projectiles1.push(new Projectile(players[1].x,players[1].y,players[1].time,-5,0,projectile));
+				}
+				if(players[1].direction == 1)
+				{
+					projectiles1.push(new Projectile(players[1].x,players[1].y,players[1].time,5,0,projectileL));
+				}
+			}
+			players[1].time = 0;
+		}
+		if(uPressed && !players[0].shielding)
+		{
+			players[0].meleeing = true;
+		}
+		if((twoPressed || ctrlPressed) && !players[1].shielding)
+		{
+			players[1].meleeing = true;
+		}
+		if(players[a].meleeing && players[a].standing)
+		{
+			if(players[a].direction == 0)
+			{
+				ctx.fillStyle = "green";
+				players[a].currentImage = images[players[a].character+7];
+				players[a].meleeing = true;
+				//ctx.fillRect(players[a].x-players[a].reach,players[a].y+(players[a].h/3),players[a].reach,20);
+				if(players[a].x - players[a].reach <= players[Math.abs(a-1)].x + players[Math.abs(a-1)].w &&
+				players[a].x >= players[Math.abs(a-1)].x &&
+				players[a].y + (players[a].h/3) <= players[Math.abs(a-1)].y + players[Math.abs(a-1)].h &&
+				players[a].y + (players[a].h/3) + 20 >= players[Math.abs(a-1)].y && !players[Math.abs(a-1)].immunity)
+				{
+					if(players[Math.abs(a-1)].shielding && players[Math.abs(a-1)].shield > 0)
+					{
+						players[Math.abs(a-1)].shield -= players[a].strength;
+						players[Math.abs(a-1)].y --;
+						players[Math.abs(a-1)].yV = -10;
+						players[Math.abs(a-1)].xV = -5;
+						players[Math.abs(a-1)].immunity = true;
+					}
+					else
+					{
+						players[Math.abs(a-1)].y --;
+						players[Math.abs(a-1)].yV = -10;
+						players[Math.abs(a-1)].xV = -5;
+						players[Math.abs(a-1)].health-= players[a].strength;
+						playPunch();
+						players[Math.abs(a-1)].immunity = true;
+					}
+				}
+			}
+			if(players[a].direction == 1)
+			{
+				players[a].currentImage = images[players[a].character+4];
+				ctx.fillStyle = "green";
+				players[a].meleeing = true;
+				//ctx.fillRect(players[a].x+players[a].w,players[a].y+(players[a].h/3),players[a].reach,20);
+				if(players[a].x + players[a].w <= players[Math.abs(a-1)].x + players[Math.abs(a-1)].w &&
+				players[a].x + players[a].w + players[a].reach >= players[Math.abs(a-1)].x &&
+				players[a].y + (players[a].h/3) <= players[Math.abs(a-1)].y + players[Math.abs(a-1)].h &&
+				players[a].y + (players[a].h/3) + 20 >= players[Math.abs(a-1)].y && !players[Math.abs(a-1)].immunity)
+				{
+					if(players[Math.abs(a-1)].shielding && players[Math.abs(a-1)].shield > 0)
+					{
+						players[Math.abs(a-1)].shield -= players[a].strength;
+						players[Math.abs(a-1)].y --;
+						players[Math.abs(a-1)].yV = -10;
+						players[Math.abs(a-1)].xV = 5;
+						players[Math.abs(a-1)].immunity = true;
+					}
+					else{
+					players[Math.abs(a-1)].y --;
+					players[Math.abs(a-1)].yV = -10;
+					players[Math.abs(a-1)].xV = 5;
+					players[Math.abs(a-1)].health-= players[a].strength;
+					playPunch();
+					players[Math.abs(a-1)].immunity = true;
+					}
+				}
+			}
+		}
+		if(players[a].meleeing && !players[a].standing)
+		{
+			if(players[a].direction == 0)
+			{
+				players[a].meleeing = true;
+				ctx.fillStyle = "green";
+				//ctx.fillRect(players[a].x-players[a].reach,players[a].y+(players[a].h),players[a].reach,20);
+				players[a].currentImage = images[players[a].character+9];
+				if(players[a].x - players[a].reach <= players[Math.abs(a-1)].x + players[Math.abs(a-1)].w &&
+				players[a].x >= players[Math.abs(a-1)].x &&
+				players[a].y + (players[a].h) <= players[Math.abs(a-1)].y + players[Math.abs(a-1)].h &&
+				players[a].y + (players[a].h) + 20 >= players[Math.abs(a-1)].y && !players[Math.abs(a-1)].immunity)
+				{
+					if(players[Math.abs(a-1)].shielding && players[Math.abs(a-1)].shield > 0)
+					{
+						players[Math.abs(a-1)].shield -= players[a].strength;
+					}
+					else{
+					players[Math.abs(a-1)].y --;
+					players[Math.abs(a-1)].yV = -10;
+					players[Math.abs(a-1)].xV = -5;
+					players[Math.abs(a-1)].health-= players[a].strength;
+					playPunch();
+					players[Math.abs(a-1)].immunity = true;
+					}
+				}
+			}
+			if(players[a].direction == 1)
+			{
+				players[a].meleeing = true;
+				ctx.fillStyle = "green";
+				//ctx.fillRect(players[a].x+players[a].w,players[a].y+(players[a].h),players[a].reach,20);
+				players[a].currentImage = images[players[a].character+8];
+				if(players[a].x + players[a].w <= players[Math.abs(a-1)].x + players[Math.abs(a-1)].w &&
+				players[a].x + players[a].w + players[a].reach >= players[Math.abs(a-1)].x &&
+				players[a].y + (players[a].h) <= players[Math.abs(a-1)].y + players[Math.abs(a-1)].h &&
+				players[a].y + (players[a].h) + 20 >= players[Math.abs(a-1)].y && !players[Math.abs(a-1)].immunity)
+				{
+					if(players[Math.abs(a-1)].shielding && players[Math.abs(a-1)].shield > 0)
+					{
+						players[Math.abs(a-1)].shield -= players[a].strength;
+					}
+					else{
+					players[Math.abs(a-1)].y --;
+					players[Math.abs(a-1)].yV = -10;
+					players[Math.abs(a-1)].xV = 5;
+					players[Math.abs(a-1)].health-= players[a].strength;
+					playPunch();
+					players[Math.abs(a-1)].immunity = true;
+					}
+				}
+			}
+		}
+		if(dPressed && !players[a].meleeing && !players[a].charging && a == 0 && !players[a].shielding)
+		{
+			players[a].xV = players[a].s;
+			players[a].direction = 1;
+			
+			if(animationClock < 100)
+			{
+				players[a].currentImage = images[players[a].character+3];
+			}
+			if(animationClock < 90)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+			if(animationClock < 80)
+			{
+				players[a].currentImage = images[players[a].character+3];
+			}
+			if(animationClock < 70)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+			if(animationClock < 60)
+			{
+				players[a].currentImage = images[players[a].character+3];
+			}
+			if(animationClock < 50)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+			if(animationClock < 40)
+			{
+				players[a].currentImage = images[players[a].character+3];
+			}
+			if(animationClock < 30)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+			if(animationClock < 20)
+			{
+				players[a].currentImage = images[players[a].character+3];
+			}
+			if(animationClock < 10)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+		}
+		if(aPressed && !players[a].meleeing && players[a].x > 0 && !players[a].charging && a == 0 && !players[a].shielding)
+		{
+			players[a].xV = (players[a].s)*-1;
+			players[a].direction = 0;
+			if(animationClock < 100)
+			{
+				players[a].currentImage = images[players[a].character+6];
+			}
+			if(animationClock < 90)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+			if(animationClock < 80)
+			{
+				players[a].currentImage = images[players[a].character+6];
+			}
+			if(animationClock < 70)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+			if(animationClock < 60)
+			{
+				players[a].currentImage = images[players[a].character+6];
+			}
+			if(animationClock < 50)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+			if(animationClock < 40)
+			{
+				players[a].currentImage = images[players[a].character+6];
+			}
+			if(animationClock < 30)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+			if(animationClock < 20)
+			{
+				players[a].currentImage = images[players[a].character+6];
+			}
+			if(animationClock < 10)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+		}
+		if(wPressed && players[a].standing && a == 0 && !players[a].charging && !players[a].shielding)
+		{
+			players[a].yV = -players[a].jump;
+		}	
+			
+		if(rightPressed && !players[a].meleeing && a == 1 && !players[a].charging && !players[a].shielding)
+		{
+			players[a].xV = players[a].s;
+			players[a].direction = 1;
+			
+			if(animationClock < 100)
+			{
+				players[a].currentImage = images[players[a].character+3];
+			}
+			if(animationClock < 90)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+			if(animationClock < 80)
+			{
+				players[a].currentImage = images[players[a].character+3];
+			}
+			if(animationClock < 70)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+			if(animationClock < 60)
+			{
+				players[a].currentImage = images[players[a].character+3];
+			}
+			if(animationClock < 50)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+			if(animationClock < 40)
+			{
+				players[a].currentImage = images[players[a].character+3];
+			}
+			if(animationClock < 30)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+			if(animationClock < 20)
+			{
+				players[a].currentImage = images[players[a].character+3];
+			}
+			if(animationClock < 10)
+			{
+				players[a].currentImage = images[players[a].character+2];
+			}
+		}
+		if(leftPressed && !players[a].meleeing && a == 1 && !players[a].charging && !players[a].shielding)
+		{
+			players[a].xV = (players[a].s)*-1;
+			players[a].direction = 0;
+			
+			if(animationClock < 100)
+			{
+				players[a].currentImage = images[players[a].character+6];
+			}
+			if(animationClock < 90)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+			if(animationClock < 80)
+			{
+				players[a].currentImage = images[players[a].character+6];
+			}
+			if(animationClock < 70)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+			if(animationClock < 60)
+			{
+				players[a].currentImage = images[players[a].character+6];
+			}
+			if(animationClock < 50)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+			if(animationClock < 40)
+			{
+				players[a].currentImage = images[players[a].character+6];
+			}
+			if(animationClock < 30)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+			if(animationClock < 20)
+			{
+				players[a].currentImage = images[players[a].character+6];
+			}
+			if(animationClock < 10)
+			{
+				players[a].currentImage = images[players[a].character+5];
+			}
+		}
+		if(upPressed && players[a].standing && a == 1 && !players[a].charging && !players[a].shielding)
+		{
+			players[a].yV = -players[a].jump;
+		}
+		if(players[a].health <= 0)
+		{
+			players[a].health = 0;
+		}
+		
+		players[a].y += players[a].yV;
+		players[a].x += players[a].xV;
+		if(players[a].x <= 0)
+		{
+			players[a].x++;
+			players[a].x -= players[a].xV;
+			if(offset > 10 && players[Math.abs(a-1)].x + players[Math.abs(a-1)].w <= 800)
+			{
+				offset += players[a].xV;
+				players[Math.abs(a-1)].x -= players[a].xV;
+			}
+			if(offset < 10 && players[Math.abs(a-1)].x + players[Math.abs(a-1)].w <= 800)
+			{
+				offset = 10;
+			}
+		}
+		if(players[a].x + players[a].w >= 800)
+		{
+			players[a].x--;
+			players[a].x -= players[a].xV;
+			if(offset < 750 && players[Math.abs(a-1)].x >= 0)
+			{
+				offset += players[a].xV;
+				players[Math.abs(a-1)].x -= players[a].xV;
+			}
+			if(offset > 750 && players[Math.abs(a-1)].x >= 0)
+			{
+				offset = 750;
+			}
+		}
+		ctx.fillStyle = "red";
+		if(players[a].direction == 0 && players[a].meleeing)
+		{
+			ctx.drawImage(players[a].currentImage,players[a].x - players[a].reach,players[a].y);
+		}
+		else
+		{
+			ctx.drawImage(players[a].currentImage,players[a].x,players[a].y);
+		}
+	}
+}
+
+function Projectile(x,y,w,v,life,image)
+{
+	this.x = x;
+	this.y = y;
+	this.w = w;
+	this.v = v;
+	this.life = life;
+	this.image = image;
+}
+
+function drawProjectiles()
+{
+	for(var a = 0; a < projectiles0.length; a++)
+	{
+		ctx.drawImage(projectiles0[a].image,projectiles0[a].x,projectiles0[a].y,projectiles0[a].w + 50,projectiles0[a].w + 50);
+		projectiles0[a].x += projectiles0[a].v;
+		projectiles0[a].life++;
+		if(projectiles0[a].x <= players[1].x + players[1].w &&
+		projectiles0[a].x + projectiles0[a].w >= players[1].x &&
+		projectiles0[a].y <= players[1].y + players[1].h &&
+		projectiles0[a].y + projectiles0[a].w >= players[1].y && !players[1].immunity)
+		{
+			if(players[1].shielding && players[1].shield > 0)
+			{
+				players[1].shield -= (projectiles0[a].w)/10;
+			}
+			else{
+			players[1].y --;
+			players[1].yV = -10;
+			players[1].xV += projectiles0[a].v;
+			playPunch();
+			players[1].health -= (projectiles0[a].w)/10;
+			}
+		}
+		if(projectiles0[a].life >= 500 || projectiles0[a].x <= players[1].x + players[1].w &&
+		projectiles0[a].x + projectiles0[a].w >= players[1].x &&
+		projectiles0[a].y <= players[1].y + players[1].h &&
+		projectiles0[a].y + projectiles0[a].w >= players[1].y && !players[1].immunity)
+		{
+			projectiles0.splice(a,1);
+		}
+	}
+	for(var a = 0; a < projectiles1.length; a++)
+	{
+		ctx.drawImage(projectiles1[a].image,projectiles1[a].x,projectiles1[a].y,projectiles1[a].w + 50,projectiles1[a].w + 50);
+		projectiles1[a].x += projectiles1[a].v;
+		projectiles1[a].life++;
+		if(projectiles1[a].x <= players[0].x + players[0].w &&
+		projectiles1[a].x + projectiles1[a].w >= players[0].x &&
+		projectiles1[a].y <= players[0].y + players[0].h &&
+		projectiles1[a].y + projectiles1[a].w >= players[0].y && !players[0].immunity)
+		{
+			if(players[0].shielding && players[0].shield > 0)
+			{
+				players[0].shield -= (projectiles1[a].w)/10;
+			}
+			else{
+			players[0].y --;
+			players[0].yV = -10;
+			players[0].xV += projectiles1[a].v;
+			playPunch();
+			players[0].health -= (projectiles1[a].w)/10;
+			}
+		}
+		if(projectiles1[a].life >= 500 || projectiles1[a].x <= players[0].x + players[0].w &&
+		projectiles1[a].x + projectiles1[a].w >= players[0].x &&
+		projectiles1[a].y <= players[0].y + players[0].h &&
+		projectiles1[a].y + projectiles1[a].w >= players[0].y && !players[0].immunity)
+		{
+			projectiles1.splice(a,1);
+		}
+	}
+}
+
+function Button(x,y,w,h,hover,pressed,text,image)
+{
+	this.x = x;
+	this.y = y;
+	this.w = w;
+	this.h = h;
+	this.hover = hover;
+	this.pressed = pressed;
+	this.text = text;
+	this.image = image;
+}
+
+buttons[0] = new Button(0,0,0,0,false,false,"",0);
+buttons[1] = new Button(0,0,0,0,false,false,"",0);
+buttons[2] = new Button(0,0,0,0,false,false,"",0);
+buttons[3] = new Button(0,0,0,0,false,false,"",0);
+buttons[4] = new Button(0,0,0,0,false,false,"",0);
+buttons[5] = new Button(0,0,0,0,false,false,"",0);
+buttons[6] = new Button(0,0,0,0,false,false,"",0);
+buttons[7] = new Button(0,0,0,0,false,false,"",0);
+
+function drawButtons()
+{
+	for(var a = 0; a < buttons.length; a++)
+	{
+		ctx.fillStyle = "red"
+		ctx.fillRect(buttons[a].x, buttons[a].y, buttons[a].w, buttons[a].h);
+		ctx.font = "60px Arial";
+		ctx.fillStyle = "black"
+		ctx.fillText(buttons[a].text, buttons[a].x + 10, buttons[a].y + 60);
+		if(buttons[a].image != 0)
+		{
+			ctx.drawImage(images[buttons[a].image],buttons[a].x,buttons[a].y,buttons[a].w,buttons[a].h);
+		}
+		if(pX >= buttons[a].x && pX <= buttons[a].x + buttons[a].w && pY >= buttons[a].y && pY <= buttons[a].y + buttons[a].h)
+		{
+			buttons[a].hover = true;
+			ctx.fillStyle = "white"
+			ctx.fillText(buttons[a].text, buttons[a].x + 10, buttons[a].y + 60);
+			if(mouseIsDown)
+			{
+				buttons[a].pressed = true;
+			}
+		}
+	}
+}
+
+function playFinal()
+{
+	Final.currentTime = 0;
+	Final.play(); 
+	Final.volume = .2 * musicVolume;
+}
+
+function playSelect()
+{
+	var select = new Audio();
+	select.src ="select.mp3";
+	select.volume *= musicVolume;
+	select.play(); 
+}
+
+function playPunch()
+{
+	var punch = new Audio();
+	punch.src ="punch.mp3";
+	punch.volume *= musicVolume;
+	punch.play(); 
+}
+
+function startScreen()
+{
+	ctx.drawImage(startscreen,0,0,800,600);
+	if(buttons[0].pressed)
+	{
+		gameStarted = true;
+		mouseIsDown = false;
+		playFinal();
+		roundTimer = roundTime;
+		projectiles0 = [];
+		projectiles1 = [];
+		offset = 400;
+		wait = 700;
+		preRound = true;
+	}
+	
+	if(buttons[1].pressed)
+	{
+		options = true;
+		mouseIsDown = false;
+		playSelect();
+	}
+	//x,y,w,h,yV,xV,standing,jump,s,direction,reach,meleeing,health,currentImage,character,immunity,strength,charging,time,released
+	if(buttons[2].pressed)
+	{
+		players[0] = new Player(10,800,100,200,0,0,false,20,5,1,50,false,100,images[2],0,false,5,false,0,true,25,false);
+		mouseIsDown = false;
+		playSelect();
+	}
+	if(buttons[3].pressed)
+	{
+		players[0] = new Player(10,800,123,200,0,0,false,17,4,1,50,false,100,images[2],13,false,8,false,0,true,25,false);
+		mouseIsDown = false;
+		playSelect();
+	}
+	if(buttons[4].pressed)
+	{
+		players[0] = new Player(10,800,100,200,0,0,false,20,5,1,50,false,100,images[2],26,false,5,false,0,true,25,false);
+		mouseIsDown = false;
+		playSelect();
+	}
+	if(buttons[5].pressed)
+	{
+		players[1] = new Player(700,800,100,200,0,0,false,20,5,0,50,false,100,images[5],0,false,5,false,0,true,25,false);
+		mouseIsDown = false;
+		playSelect();
+	}
+	if(buttons[6].pressed)
+	{
+		players[1] = new Player(700,800,123,200,0,0,false,17,4,0,50,false,100,images[2],13,false,8,false,0,true,25,false);
+		mouseIsDown = false;
+		playSelect();
+	}
+	if(buttons[7].pressed)
+	{
+		players[1] = new Player(700,800,100,200,0,0,false,20,5,0,50,false,100,images[5],26,false,5,false,0,true,25,false);
+		mouseIsDown = false;
+		playSelect();
+	}
+	ctx.fillStyle = "white";
+	ctx.fillText("P1",500,350);
+	ctx.fillText("P2",575,350);
+	buttons[0] = new Button(100,350,225,75,false,false,"START",0);
+	buttons[1] = new Button(100,450,300,75,false,false,"OPTIONS",0);
+	buttons[2] = new Button(500,350,50,50,false,false,"",1);
+	buttons[3] = new Button(500,401,50,50,false,false,"",14);
+	buttons[4] = new Button(500,452,50,50,false,false,"",27);
+	buttons[5] = new Button(575,350,50,50,false,false,"",1);
+	buttons[6] = new Button(575,401,50,50,false,false,"",14);
+	buttons[7] = new Button(575,452,50,50,false,false,"",27);
+}
+
+function drawVsScreen()
+{
+	ctx.drawImage(vsScreen,0,0,800,600);
+	if(wait < 620)
+	{
+		ctx.drawImage(images[players[0].character+1],100,100,112,129);
+	}
+	if(wait < 480)
+	{
+		ctx.drawImage(vs,325,225,150,150);
+	}
+	if(wait < 340)
+	{
+		ctx.drawImage(images[players[1].character+1],600,400,112,129);
+	}
+	if(wait <= 0)
+	{
+		preRound = false;
+	}
+}
+
+function optionsLogic()
+{
+	ctx.drawImage(option,0,0,800,600);
+	ctx.fillStyle = "white";
+	ctx.font = "30px Arial";
+	ctx.fillText("VOLUME " + Math.floor(musicVolume*10),20,375);
+	ctx.fillStyle = "white";
+	ctx.font = "30px Arial";
+	ctx.fillText("roundTime " + Math.floor(roundTime/10),200,375);
+	ctx.font = "25px Arial";
+	ctx.fillText("CONTROLS",400,30);
+	ctx.fillText("P1: Left/right - a/d",400,55);
+	ctx.fillText("Jump - w",400,80);
+	ctx.fillText("Melee - u",400,105);
+	ctx.fillText("Charge Blast - i",400,130);
+	ctx.fillText("Block - s",400,155);
+	ctx.fillText("P2: Left/right - leftarrow/rightarrow",400,205);
+	ctx.fillText("Jump - uparrow",400,230);
+	ctx.fillText("Melee - 2",400,255);
+	ctx.fillText("Charge Blast - 3",400,280);
+	ctx.fillText("Block - downarrow",400,305);
+	ctx.fillText("Exit To Menu - esc",400,355);
+	ctx.fillText("RULES",400,405);
+	ctx.fillText("Lower the oponents healthbar",400,430);
+	ctx.fillText("(green) to zero. Hold down",400,455);
+	ctx.fillText("your charge blast to release",400,480);
+	ctx.fillText("a ball of energy. Block to ",400,505);
+	ctx.fillText("avoid enemy attacks, but",400,530);
+	ctx.fillText("be careful; You only have",400,555);
+	ctx.fillText("limited shield (blue).",400,580);
+	if(buttons[0].pressed)
+	{
+		options = false;
+		mouseIsDown = false;
+		playSelect();
+	}
+	if(buttons[1].pressed && Math.floor(musicVolume*10) < 10)
+	{
+		musicVolume +=.1
+		mouseIsDown = false;
+		playSelect();
+	}
+	if(buttons[2].pressed && Math.floor(musicVolume*10) > 0)
+	{
+		musicVolume -=.1
+		mouseIsDown = false;
+		playSelect();
+	}
+	if(buttons[3].pressed)
+	{
+		roundTime+=10;
+		mouseIsDown = false;
+		playSelect();
+	}
+	if(buttons[4].pressed)
+	{
+		roundTime-=10;
+		mouseIsDown = false;
+		playSelect();
+	}
+	buttons[0] = new Button(100,100,200,75,false,false,"BACK",0);
+	buttons[1] = new Button(90,250,50,75,false,false,"↑",0);
+	buttons[2] = new Button(90,400,50,75,false,false,"↓",0);
+	buttons[3] = new Button(240,250,50,75,false,false,"↑",0);
+	buttons[4] = new Button(240,400,50,75,false,false,"↓",0);
+	buttons[5] = new Button(0,0,0,0,false,false,"",0);
+	buttons[6] = new Button(0,0,0,0,false,false,"",0);
+	buttons[7] = new Button(0,0,0,0,false,false,"",0);
+}
+
+function gameLogic()
+{
+	ctx.drawImage(stage,0-offset,0);
+	drawPlayer();
+	ctx.fillStyle = "red";
+	ctx.fillRect(370,10,100*-2.57,15);
+	ctx.fillRect(435,10,100*2.57,15);
+	ctx.fillRect(295,30,25*-6.75,10);
+	ctx.fillRect(510,30,25*6.75,10);
+	ctx.fillStyle = "green";
+	ctx.fillRect(370,10,(players[0].health)*-2.57,15);
+	ctx.fillRect(435,10,(players[1].health)*2.57,15);
+	ctx.fillStyle = "#03c2fc";
+	ctx.fillRect(295,30,(players[0].shield)*-6.75,10);
+	ctx.fillRect(510,30,(players[1].shield)*6.75,10);
+	roundTimer -= .1;
+	ctx.drawImage(images[players[0].character+1],20,12,40,40);
+	ctx.drawImage(images[players[1].character+1],740,12,40,40);
+	ctx.drawImage(hpbar,0,3,800,100);
+	ctx.font = "25px Arial";
+	ctx.fillStyle = "white";
+	ctx.fillText(Math.floor(roundTimer/10),387,35);
+	if(escPressed)
+	{
+		gameStarted = false;
+		Final.pause();
+	}
+	drawProjectiles();
+	if(players[0].health <= 0 || players[1].health <= 0 || roundTimer <= 0)
+	{
+		endScreen = true;
+		wait = 500;
+	}
+}
+
+function drawEndScreen()
+{
+	if(roundTimer <= 2)
+	{
+		ctx.font = "50px Arial";
+		ctx.fillText("TIE",300,300);
+	}
+	if(players[0].health <= 0)
+	{
+		ctx.drawImage(ko,200,100,400,200);
+		ctx.font = "50px Arial";
+		ctx.fillText("PLAYER 2 WINS!",150,350);
+	}
+	if(players[1].health <= 0)
+	{
+		ctx.drawImage(ko,200,100,400,200);
+		ctx.font = "50px Arial";
+		ctx.fillText("PLAYER 1 WINS!",150,350);
+	}
+	if(wait <= 0)
+	{
+		gameStarted = false;
+		endScreen = false;
+		Final.pause();
+		players[0] = new Player(10,800,100,200,0,0,false,20,5,1,50,false,100,images[2],0,false,5,false,0,true,25,false);
+		players[1] = new Player(700,800,100,200,0,0,false,20,5,1,50,false,100,images[2],0,false,5,false,0,true,25,false);
+	}
+}
+
+function draw()
+{
+	if(!endScreen)
+	{
+		ctx.clearRect(0,0,800,600);
+	}
+	
+	if(!gameStarted)
+	{
+		if(options)
+		{
+			optionsLogic();
+			drawButtons();
+		}
+		else
+		{
+			startScreen();
+			drawButtons();
+		}
+	}
+	else if(gameStarted && wait == 0 && !endScreen)
+	{
+		gameLogic();
+	}
+	if(wait > 0 && preRound)
+	{
+		wait--;
+		drawVsScreen();
+	}
+	if(wait > 0 && endScreen)
+	{
+		wait--;
+		drawEndScreen();
+	}
+	if(animationClock <= 0)
+	{
+		animationClock = 100;
+	}
+	animationClock--;
+}
+
+</script>
+</body>
+</html>
